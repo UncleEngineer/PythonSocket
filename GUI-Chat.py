@@ -82,8 +82,15 @@ E1.bind('<Return>',SendMessage)
 username = StringVar()
 
 getname = simpledialog.askstring('NAME','คุณชื่ออะไร?')
+import random
+
+print('GETNAME',getname)
+if getname == '' or getname == None:
+	num = random.randint(10000,99999)
+	getname = str(num)
+
 username.set(getname)
-chatbox.insert(INSERT,'สวัสดี' + getname)
+chatbox.insert(INSERT,'สวัสดี ' + getname)
 
 ###########RUN SERVER#############
 global client
@@ -92,6 +99,8 @@ client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
 
 try:
 	client.connect((SERVERIP,PORT))
+	firsttext = 'NAME|' + username.get()
+	client.send(firsttext.encode('utf-8'))
 	task = threading.Thread(target=server_handler, args=(client,))
 	task.start()
 except:
