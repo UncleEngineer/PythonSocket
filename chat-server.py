@@ -6,7 +6,7 @@ import threading
 
 PORT = 7500
 BUFSIZE = 4096
-SERVERIP = '159.65.135.242' # YOUR IP
+SERVERIP = '159.65.135.242' # YOUR IP 192.168.0.150
 
 clist = [] # Client List
 cdict = {}
