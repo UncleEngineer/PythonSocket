@@ -2,8 +2,10 @@
 
 import socket
 
-serverip = 'localhost'
-port = 7000
+#serverip = '159.65.135.242'
+#serverip = '159.65.135.242'
+serverip = '192.168.1.150'
+port = 7500
 
 while True:
 	server = socket.socket()
@@ -19,4 +21,3 @@ while True:
 	print('Message from client: ', data)
 	client.send('We received your Message!'.encode('utf-8'))
 	client.close()
-	

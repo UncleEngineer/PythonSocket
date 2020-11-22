@@ -1,7 +1,7 @@
 import socket
 
-serverip = 'localhost'
-port = 7000
+serverip = '192.168.1.150'
+port = 7500
 
 while True:
 	data = input('Enter Message: ')

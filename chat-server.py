@@ -6,14 +6,19 @@ import threading
 
 PORT = 7500
 BUFSIZE = 4096
-SERVERIP = 'localhost' # YOUR IP
+SERVERIP = '159.65.135.242' # YOUR IP
 
 clist = [] # Client List
+cdict = {}
 
 def client_handler(client,addr):
 	while True:
 		try:
 			data = client.recv(BUFSIZE)
+			check = data.decode('utf-8').split('|')
+			if check[0] == 'NAME':
+				cdict[str(addr)] = check[1]
+				
 		except:
 			clist.remove(client)
 			break
@@ -22,7 +27,11 @@ def client_handler(client,addr):
 			clist.remove(client)
 			print('OUT: ',client)
 			break
-		msg = str(addr) + '>>> ' + data.decode('utf-8') # ข้อความส่งไปให้ชาวบ้านเขา
+		try:
+			username = cdict[str(addr)]
+			msg = username + '>>> ' + data.decode('utf-8')
+		except:
+			msg = str(addr) + '>>> ' + data.decode('utf-8')
 		print('USER: ',msg)
 		print('----------')
 		for c in clist:
