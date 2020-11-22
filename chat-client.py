@@ -4,7 +4,7 @@ import sys
 
 PORT = 7500
 BUFSIZE = 4096
-SERVERIP = 'localhost' # SERVER IP
+SERVERIP = '159.65.135.242' # SERVER IP
 
 def server_handler(client):
 	while True:
