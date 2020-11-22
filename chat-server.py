@@ -23,7 +23,7 @@ def client_handler(client,addr):
 			print('OUT: ',client)
 			break
 		msg = str(addr) + '>>> ' + data.decode('utf-8') # ข้อความส่งไปให้ชาวบ้านเขา
-		print('USER: ')
+		print('USER: ',msg)
 		print('----------')
 		for c in clist:
 			c.sendall(msg.encode('utf-8'))
