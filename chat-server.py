@@ -34,8 +34,17 @@ def client_handler(client,addr):
 			msg = str(addr) + '>>> ' + data.decode('utf-8')
 		print('USER: ',msg)
 		print('----------')
-		for c in clist:
-			c.sendall(msg.encode('utf-8'))
+		
+		try:
+			check = data.decode('utf-8').split('|')
+			if check[0] == 'NAME':
+				pass
+			else:
+				for c in clist:
+					c.sendall(msg.encode('utf-8'))
+		except:
+			for c in clist:
+				c.sendall(msg.encode('utf-8'))
 
 	client.close()
 

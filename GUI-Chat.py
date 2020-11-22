@@ -39,7 +39,21 @@ def server_handler(client):
 
 ##############################################
 GUI = Tk()
-GUI.geometry('650x750+1000+100')
+#GUI.geometry('650x750+1000+100')
+
+w = 650
+h = 750
+
+ws = GUI.winfo_screenwidth() #screen width
+hs = GUI.winfo_screenheight() #screen height
+print(ws,hs)
+
+x = (ws/2) - (w/2)
+y = (hs/2) - (h/2)
+
+GUI.geometry(f'{w}x{h}+{x:.0f}+{y:.0f}')
+
+
 GUI.title('โปรแกรมแชทไปหาลุง')
 
 FONT1 = ('Angsana New',35) 
@@ -64,7 +78,7 @@ E1.pack(ipady=20)
 #############button###############
 def SendMessage(event=None):
 	msg = v_msg.get()
-	allmsg.set(allmsg.get() + msg + '\n---\n')
+	#allmsg.set(allmsg.get() + msg + '\n---\n')
 	client.sendall(msg.encode('utf-8')) ######SEND to SERVER######
 	chatbox.delete(1.0,END) # clear old msg
 	chatbox.insert(INSERT,allmsg.get()) # insert new
@@ -81,31 +95,88 @@ E1.bind('<Return>',SendMessage)
 
 username = StringVar()
 
-getname = simpledialog.askstring('NAME','คุณชื่ออะไร?')
-import random
+global getname
+getname = ''
 
-print('GETNAME',getname)
-if getname == '' or getname == None:
-	num = random.randint(10000,99999)
-	getname = str(num)
 
-username.set(getname)
-chatbox.insert(INSERT,'สวัสดี ' + getname)
+################CUSTOM DIALOG##################
 
-###########RUN SERVER#############
-global client
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
+def GUI2Dialog():
+	GUI2 = Toplevel()
+	GUI2.attributes('-topmost',True)
+	w = 300
+	h = 200
 
-try:
-	client.connect((SERVERIP,PORT))
-	firsttext = 'NAME|' + username.get()
-	client.send(firsttext.encode('utf-8'))
-	task = threading.Thread(target=server_handler, args=(client,))
-	task.start()
-except:
-	print('ERROR!')
-	messagebox.showerror('Connection Failed','ไม่สามารถเชื่อมต่อกับ server ได้')
+	ws = GUI2.winfo_screenwidth() #screen width
+	hs = GUI2.winfo_screenheight() #screen height
+	print(ws,hs)
+
+	x = (ws/2) - (w/2)
+	y = (hs/2) - (h/2)
+
+	GUI2.geometry(f'{w}x{h}+{x:.0f}+{y:.0f}')
+
+	v_getname = StringVar()
+
+	L = ttk.Label(GUI2, text='Name',font=FONT2).pack()
+
+	EN1 = ttk.Entry(GUI2,textvariable=v_getname,font=('Angsana New',25),width=40)
+	EN1.pack(padx=30,pady=00)
+
+	def EnterName(event=None):
+		global getname
+		getname = v_getname.get()
+		GUI2.withdraw()
+		GUI.attributes('-topmost',True)
+		E1.focus()
+		GUI.attributes('-topmost',False)
+
+		import random
+
+		print('GETNAME',getname)
+		if getname == '' or getname == None:
+			num = random.randint(10000,99999)
+			getname = str(num)
+
+		username.set(getname)
+		chatbox.insert(INSERT,'สวัสดี ' + getname)
+
+
+		###########RUN SERVER#############
+		global client
+		client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
+
+		try:
+			client.connect((SERVERIP,PORT))
+			firsttext = 'NAME|' + username.get()
+			client.send(firsttext.encode('utf-8'))
+			task = threading.Thread(target=server_handler, args=(client,))
+			task.start()
+		except:
+			print('ERROR!')
+			messagebox.showerror('Connection Failed','ไม่สามารถเชื่อมต่อกับ server ได้')
+
+	BB2 = ttk.Button(GUI2,text='Enter Chatroom',command=EnterName)
+	BB2.pack(ipady=10,ipadx=20,pady=20)
+
+	EN1.bind('<Return>',EnterName)
+
+
+	def CheckClose():
+		GUI2.attributes('-topmost',False)
+		checkenter = messagebox.askyesno('ยืนยันการปิดโปรแกรม','หากไม่กรอกชื่อจะไม่สามารถใช้งานโปรแกรมได้\nคุณต้องการออกจากโปรแกรมใช่หรือไม่?')
+		print('CHECK: ',checkenter)
+		if checkenter == True:
+			GUI2.destroy()
+		else:
+			GUI2.attributes('-topmost',True)
+
+	EN1.focus()
+	GUI2.protocol('WM_DELETE_WINDOW', CheckClose)  # root is your root window
+	GUI2.mainloop()
+
+GUI2Dialog()
 
 
 
